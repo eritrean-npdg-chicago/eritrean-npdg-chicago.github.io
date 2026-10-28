@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eritrean National Public Diplomacy Group – Chicago</title>
+<meta name="description" content="A volunteer group of Eritrean Americans in the Chicago area building understanding of Eritrea with elected officials and the public.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #12854a;
+    --red: #c8102e;
+    --blue: #1a5ba8;
+    --gold: #e8b923;
+    --ink: #1c1f23;
+    --muted: #5a6270;
+    --bg: #ffffff;
+    --soft: #f5f6f4;
+    --line: #e2e5e0;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: "Inter", system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.65;
+    font-size: 17px;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 20px; }
+
+  /* flag stripe */
+  .stripe { height: 6px; display: flex; }
+  .stripe span:nth-child(1) { flex: 1; background: var(--green); }
+  .stripe span:nth-child(2) { flex: 1; background: var(--red); }
+  .stripe span:nth-child(3) { flex: 1; background: var(--blue); }
+
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 0; gap: 16px; flex-wrap: wrap;
+  }
+  .brand { font-weight: 600; letter-spacing: .02em; text-decoration: none; color: var(--ink); }
+  nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; }
+  nav a { color: var(--muted); text-decoration: none; font-size: 15px; }
+  nav a:hover { color: var(--ink); }
+
+  header.hero { padding: 64px 0 72px; border-bottom: 1px solid var(--line); }
+  .eyebrow {
+    display: inline-block; font-size: 13px; font-weight: 600; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--green); margin-bottom: 14px;
+  }
+  h1, h2 { font-family: "Source Serif 4", Georgia, serif; line-height: 1.2; margin: 0 0 16px; }
+  h1 { font-size: clamp(32px, 6vw, 48px); max-width: 18ch; }
+  h2 { font-size: 28px; }
+  .lede { font-size: 19px; color: var(--muted); max-width: 60ch; margin: 0 0 28px; }
+
+  .btn {
+    display: inline-block; padding: 12px 22px; border-radius: 6px; font-weight: 600;
+    text-decoration: none; font-size: 15px;
+  }
+  .btn-primary { background: var(--green); color: #fff; }
+  .btn-primary:hover { background: #0e6d3c; }
+  .btn-ghost { border: 1px solid var(--line); color: var(--ink); margin-left: 8px; }
+  .btn-ghost:hover { border-color: var(--ink); }
+
+  section { padding: 64px 0; border-bottom: 1px solid var(--line); }
+  section p { max-width: 65ch; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-top: 24px; }
+  .card { background: var(--soft); border-radius: 8px; padding: 22px; border-top: 3px solid var(--blue); }
+  .card:nth-child(2) { border-top-color: var(--red); }
+  .card:nth-child(3) { border-top-color: var(--gold); }
+  .card h3 { margin: 0 0 8px; font-size: 17px; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+
+  .contact-list { list-style: none; padding: 0; margin: 20px 0 0; }
+  .contact-list li { padding: 12px 0; border-bottom: 1px solid var(--line); display: flex; gap: 12px; flex-wrap: wrap; }
+  .contact-list strong { min-width: 110px; }
+  .contact-list a { color: var(--blue); }
+
+  .mission {
+    font-family: "Source Serif 4", Georgia, serif; font-size: 22px; line-height: 1.45;
+    border-left: 4px solid var(--green); padding: 4px 0 4px 20px; margin: 8px 0 32px; max-width: 60ch;
+  }
+  h3.sub { font-size: 15px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 4px; }
+
+  .year { font-family: "Source Serif 4", Georgia, serif; font-size: 22px; margin: 36px 0 8px; color: var(--green); }
+  .timeline { list-style: none; margin: 0; padding: 0; border-left: 2px solid var(--line); }
+  .timeline li { position: relative; padding: 0 0 22px 24px; }
+  .timeline li::before {
+    content: ""; position: absolute; left: -7px; top: 7px; width: 12px; height: 12px;
+    border-radius: 50%; background: var(--bg); border: 2px solid var(--blue);
+  }
+  .timeline li.event::before { border-color: var(--red); }
+  .timeline .when { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .timeline .what { font-weight: 600; margin: 2px 0; }
+  .timeline p { margin: 0; color: var(--muted); font-size: 15px; }
+  .legend { display: flex; gap: 18px; font-size: 14px; color: var(--muted); margin-top: 8px; flex-wrap: wrap; }
+  .legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--blue); margin-right: 6px; vertical-align: -1px; }
+  .legend span.ev::before { border-color: var(--red); }
+
+  footer { padding: 32px 0 48px; color: var(--muted); font-size: 14px; }
+
+  @media (max-width: 520px) {
+    nav ul { gap: 14px; }
+    .btn-ghost { margin-left: 0; margin-top: 10px; }
+  }
+</style>
+</head>
+<body>
+  <div class="stripe"><span></span><span></span><span></span></div>
+
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="#">Eritrean NPDG Chicago</a>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#mission">Mission</a></li>
+        <li><a href="#record">Our Work</a></li>
+        <li><a href="eritrea.html">About Eritrea</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <header class="hero">
+    <div class="wrap">
+      <span class="eyebrow">Chicago Chapter</span>
+      <h1>Eritrean National Public Diplomacy Group</h1>
+      <p class="lede">Building understanding of Eritrea and its people with elected officials, policymakers, and the public.</p>
+      <a class="btn btn-primary" href="#contact">Get involved</a>
+      <a class="btn btn-ghost" href="https://www.facebook.com/share/1CnaaJW9Qa/" target="_blank" rel="noopener">Follow on Facebook</a>
+      <a class="btn btn-ghost" href="eritrea.html">Explore Eritrea</a>
+    </div>
+  </header>
+
+  <section id="about">
+    <div class="wrap">
+      <h2>About us</h2>
+      <p>The Eritrean National Public Diplomacy Group (NPDG) in Chicago is a volunteer group of Eritrean Americans in the Chicago area. We work to strengthen understanding of Eritrea among state and federal officials, policymakers, and the wider public.</p>
+      <p>Our focus is direct engagement: meeting with elected representatives, sharing accurate information about Eritrea, and making sure the Eritrean American community has a voice in conversations that affect it.</p>
+    </div>
+  </section>
+
+  <section id="mission">
+    <div class="wrap">
+      <h2>Mission and goals</h2>
+      <p class="mission">To build lasting relationships between the Eritrean American community and the officials who represent it, and to make sure decisions affecting Eritrea and its people are informed by accurate information and community voices.</p>
+      <h3 class="sub">Our goals</h3>
+      <div class="cards">
+        <div class="card">
+          <h3>Build relationships with officials</h3>
+          <p>Hold regular meetings with Illinois members of Congress, state legislators, and candidates, and keep those relationships going between elections.</p>
+        </div>
+        <div class="card">
+          <h3>Bring concrete, policy-specific asks</h3>
+          <p>Back every meeting with written briefs on the issues our community faces, including financial access for families and businesses.</p>
+        </div>
+        <div class="card">
+          <h3>Show up in civic life</h3>
+          <p>Volunteer at community and civic events, learn from established organizations, and bring officials into Eritrean community celebrations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="record">
+    <div class="wrap">
+      <h2>What we've done</h2>
+      <p>Since fall 2025, our members have met with federal and state offices, volunteered at civic events, and brought officials into community celebrations.</p>
+      <div class="legend"><span>Meeting or outreach</span><span class="ev">Event</span></div>
+
+      <div class="year">2025</div>
+      <ul class="timeline">
+        <li>
+          <div class="when">September</div>
+          <div class="what">Introductory meeting with Rep. Jan Schakowsky's district office</div>
+          <p>Met with district staff in Skokie, who invited us to bring the Congresswoman into community events and forums.</p>
+        </li>
+        <li>
+          <div class="when">October</div>
+          <div class="what">Meeting with Rep. Mike Quigley's office</div>
+          <p>Met with the Washington office's foreign policy staff.</p>
+        </li>
+        <li>
+          <div class="when">November</div>
+          <div class="what">Meeting with IL-09 candidate Kat Abughazaleh</div>
+          <p>Met at her Rogers Park campaign office to introduce the group and the community.</p>
+        </li>
+      </ul>
+
+      <div class="year">2026</div>
+      <ul class="timeline">
+        <li>
+          <div class="when">January</div>
+          <div class="what">Meeting with Rep. Jan Schakowsky</div>
+          <p>Met directly with the Congresswoman in Skokie on the diaspora community and financial access barriers facing Eritrean American families. She asked for a written brief and coalition connections.</p>
+        </li>
+        <li>
+          <div class="when">April</div>
+          <div class="what">Meeting with State Sen. Lakesia Collins's office</div>
+          <p>Introduced NPDG Chicago to the Senator's staff and offered volunteers for her community events.</p>
+        </li>
+        <li class="event">
+          <div class="when">May</div>
+          <div class="what">Volunteered at Sen. Collins's Mother's Day event, Douglas Park</div>
+          <p>Our members volunteered at the event and met the Senator's team.</p>
+        </li>
+        <li class="event">
+          <div class="when">May</div>
+          <div class="what">Skokie Festival of Cultures</div>
+          <p>Represented the Eritrean community at Skokie's annual cultural festival.</p>
+        </li>
+        <li class="event">
+          <div class="when">May</div>
+          <div class="what">Eritrean Independence Day celebration, Chicago</div>
+          <p>Welcomed Sen. Collins's office to the community celebration. Rep. Schakowsky's office sent a written statement recognizing the day.</p>
+        </li>
+        <li>
+          <div class="when">July</div>
+          <div class="what">Guidance from the Chinese American Service League (CASL)</div>
+          <p>Met with one of Chicago's largest community organizations, which has advised us on structuring and building our organization. Followed up in September.</p>
+        </li>
+        <li>
+          <div class="when">August</div>
+          <div class="what">Introductory call with IL-09 nominee Daniel Biss</div>
+          <p>Introduced the group and the community's priorities.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <h2>Get involved</h2>
+      <p>Want to join a meeting, volunteer, or connect with the group? Fill out our contact form and someone will get back to you.</p>
+      <a class="btn btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLSc54zqNRz8wLZRrDOJHOdf2nDMd0_T_ftlGjTicZTiLE-98sQ/viewform" target="_blank" rel="noopener">Contact us</a>
+      <a class="btn btn-ghost" href="https://www.facebook.com/share/1CnaaJW9Qa/" target="_blank" rel="noopener">Message us on Facebook</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      &copy; <span id="yr">2026</span> Eritrean National Public Diplomacy Group – Chicago
+    </div>
+  </footer>
+
+  <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+</body>
+</html>

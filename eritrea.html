@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About Eritrea – Eritrean NPDG Chicago</title>
+<meta name="description" content="Get to know Eritrea: its regions, cities, history, and culture, with an interactive map.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+  :root {
+    --green: #12854a; --red: #c8102e; --blue: #1a5ba8; --gold: #e8b923;
+    --ink: #1c1f23; --muted: #5a6270; --bg: #ffffff; --soft: #f5f6f4; --line: #e2e5e0;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: "Inter", system-ui, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.65; font-size: 17px; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+  .stripe { height: 6px; display: flex; }
+  .stripe span:nth-child(1) { flex: 1; background: var(--green); }
+  .stripe span:nth-child(2) { flex: 1; background: var(--red); }
+  .stripe span:nth-child(3) { flex: 1; background: var(--blue); }
+  nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; gap: 16px; flex-wrap: wrap; }
+  .brand { font-weight: 600; letter-spacing: .02em; text-decoration: none; color: var(--ink); }
+  nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; flex-wrap: wrap; }
+  nav a { color: var(--muted); text-decoration: none; font-size: 15px; }
+  nav a:hover, nav a.active { color: var(--ink); }
+  h1, h2 { font-family: "Source Serif 4", Georgia, serif; line-height: 1.2; margin: 0 0 16px; }
+  h1 { font-size: clamp(32px, 6vw, 48px); }
+  h2 { font-size: 28px; }
+  .eyebrow { display: inline-block; font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--green); margin-bottom: 14px; }
+  .lede { font-size: 19px; color: var(--muted); max-width: 62ch; margin: 0; }
+  header.hero { padding: 48px 0 56px; border-bottom: 1px solid var(--line); }
+  section { padding: 56px 0; border-bottom: 1px solid var(--line); }
+  section p { max-width: 68ch; }
+
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-top: 24px; }
+  .fact { background: var(--soft); border-radius: 8px; padding: 16px 18px; }
+  .fact .k { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .fact .v { font-size: 18px; font-weight: 600; margin-top: 2px; }
+  .fact .n { font-size: 13px; color: var(--muted); }
+
+  /* map */
+  .map-shell { display: grid; grid-template-columns: 1fr 300px; gap: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-top: 20px; }
+  #map { height: 560px; background: #dfe9f0; }
+  .panel { padding: 18px; background: var(--soft); display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+  .tabs { display: flex; gap: 6px; }
+  .tab { flex: 1; padding: 9px 8px; border: 1px solid var(--line); background: var(--bg); border-radius: 6px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; color: var(--muted); }
+  .tab.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .filters { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); font: inherit; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+  .chip i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .chip.off { opacity: .4; }
+  .card { background: var(--bg); border-radius: 8px; padding: 16px; border: 1px solid var(--line); }
+  .card h3 { margin: 0 0 4px; font-size: 18px; font-family: "Source Serif 4", Georgia, serif; }
+  .card .tag { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+  .card p { margin: 8px 0 0; font-size: 15px; color: var(--muted); }
+  .hint { font-size: 14px; color: var(--muted); margin: 0; }
+  .quiz-q { font-weight: 600; font-size: 16px; }
+  .score { font-size: 14px; color: var(--muted); }
+  .feedback { font-size: 15px; font-weight: 600; min-height: 1.4em; }
+  .feedback.good { color: var(--green); }
+  .feedback.bad { color: var(--red); }
+  .btn { display: inline-block; padding: 10px 18px; border-radius: 6px; font-weight: 600; text-decoration: none; font-size: 15px; border: 0; cursor: pointer; font-family: inherit; }
+  .btn-primary { background: var(--green); color: #fff; }
+  .btn-primary:hover { background: #0e6d3c; }
+  .btn-ghost { background: var(--bg); border: 1px solid var(--line); color: var(--ink); }
+
+  .pin { width: 16px; height: 16px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); }
+  .pin.capital { width: 22px; height: 22px; }
+  .pin.sel { outline: 3px solid var(--ink); outline-offset: 1px; }
+  .leaflet-tooltip.lbl { background: rgba(255,255,255,.92); border: 0; box-shadow: none; font: 600 12px Inter, sans-serif; padding: 1px 6px; color: var(--ink); }
+  .leaflet-tooltip.lbl::before { display: none; }
+
+  .culture { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin-top: 24px; }
+  .culture .card { border-top: 3px solid var(--blue); }
+  .culture .card:nth-child(2) { border-top-color: var(--red); }
+  .culture .card:nth-child(3) { border-top-color: var(--gold); }
+  .culture .card:nth-child(4) { border-top-color: var(--green); }
+  .peoples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .peoples span { background: var(--soft); border-radius: 999px; padding: 6px 14px; font-size: 15px; font-weight: 500; }
+
+  footer { padding: 32px 0 48px; color: var(--muted); font-size: 14px; }
+
+  @media (max-width: 760px) {
+    .map-shell { grid-template-columns: 1fr; }
+    #map { height: 420px; }
+  }
+</style>
+</head>
+<body>
+  <div class="stripe"><span></span><span></span><span></span></div>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="index.html">Eritrean NPDG Chicago</a>
+      <ul>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#mission">Mission</a></li>
+        <li><a href="index.html#record">Our Work</a></li>
+        <li><a href="eritrea.html" class="active">About Eritrea</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <header class="hero">
+    <div class="wrap">
+      <span class="eyebrow">Get to know Eritrea</span>
+      <h1>Eritrea at a glance</h1>
+      <p class="lede">A young country with an ancient history, Eritrea sits on the Red Sea in the Horn of Africa. It is home to nine ethnic groups, a modernist capital recognized by UNESCO, and more than a thousand kilometers of coastline.</p>
+    </div>
+  </header>
+
+  <section id="facts">
+    <div class="wrap">
+      <h2>Quick facts</h2>
+      <div class="facts">
+        <div class="fact"><div class="k">Capital</div><div class="v">Asmara</div><div class="n">About 2,300 m above sea level</div></div>
+        <div class="fact"><div class="k">Independence</div><div class="v">May 24, 1991</div><div class="n">Formally recognized in 1993 after a referendum</div></div>
+        <div class="fact"><div class="k">Area</div><div class="v">~117,600 km²</div><div class="n">About the size of Pennsylvania</div></div>
+        <div class="fact"><div class="k">Coastline</div><div class="v">Red Sea</div><div class="n">Over 1,000 km, plus 350+ islands</div></div>
+        <div class="fact"><div class="k">Regions</div><div class="v">6 zobas</div><div class="n">Administrative regions</div></div>
+        <div class="fact"><div class="k">Currency</div><div class="v">Nakfa</div><div class="n">Named after the town of Nakfa</div></div>
+        <div class="fact"><div class="k">Languages</div><div class="v">Many</div><div class="n">Tigrinya, Arabic and English are widely used in government</div></div>
+        <div class="fact"><div class="k">Neighbors</div><div class="v">3 + the sea</div><div class="n">Sudan, Ethiopia, Djibouti</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="map-section">
+    <div class="wrap">
+      <h2>Explore the map</h2>
+      <p>Click a pin to learn about a place. Switch to <strong>Quiz</strong> to test yourself.</p>
+
+      <div class="map-shell">
+        <div id="map" role="region" aria-label="Interactive map of Eritrea"></div>
+        <div class="panel">
+          <div class="tabs">
+            <button class="tab on" data-mode="explore">Explore</button>
+            <button class="tab" data-mode="quiz">Quiz</button>
+          </div>
+
+          <div id="explore">
+            <div class="filters" id="filters"></div>
+            <div class="card" id="info" style="margin-top:14px">
+              <h3>Pick a place</h3>
+              <p>Tap any pin on the map, or use the button below to jump somewhere at random.</p>
+            </div>
+            <div style="margin-top:12px">
+              <button class="btn btn-ghost" id="randomBtn">Surprise me</button>
+            </div>
+          </div>
+
+          <div id="quiz" hidden>
+            <p class="hint">Read the clue, then click the matching pin on the map.</p>
+            <div class="card">
+              <div class="quiz-q" id="quizQ"></div>
+            </div>
+            <div class="feedback" id="feedback"></div>
+            <div class="score" id="score">Score: 0 / 0</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-primary" id="nextBtn">Next clue</button>
+              <button class="btn btn-ghost" id="resetBtn">Start over</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="people">
+    <div class="wrap">
+      <h2>People and culture</h2>
+      <p>Eritrea officially recognizes nine ethnic groups, each with its own language and traditions. Christianity and Islam are both long established, and many towns have churches and mosques side by side.</p>
+      <div class="peoples">
+        <span>Tigrinya</span><span>Tigre</span><span>Saho</span><span>Afar</span><span>Bilen</span><span>Kunama</span><span>Nara</span><span>Hidareb</span><span>Rashaida</span>
+      </div>
+
+      <div class="culture">
+        <div class="card">
+          <h3>Coffee ceremony</h3>
+          <p>Beans are roasted by hand, ground, and brewed in a clay pot called a <em>jebena</em>. Guests are served three rounds, and turning one down is rare.</p>
+        </div>
+        <div class="card">
+          <h3>Food</h3>
+          <p>Meals are shared from one plate. <em>Injera</em>, a spongy flatbread, is served with stews like <em>tsebhi</em> and <em>shiro</em>, a spiced chickpea dish.</p>
+        </div>
+        <div class="card">
+          <h3>Cycling</h3>
+          <p>Cycling is the national passion, and Asmara hosts races through its streets. In 2024, Biniam Girmay became the first Black African rider to win a stage of the Tour de France.</p>
+        </div>
+        <div class="card">
+          <h3>Architecture</h3>
+          <p>Asmara's 1930s modernist buildings, from cinemas to a gas station shaped like an airplane, earned the city a place on UNESCO's World Heritage List in 2017.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      &copy; <span id="yr">2026</span> Eritrean National Public Diplomacy Group – Chicago ·
+      <a href="index.html" style="color:inherit">Home</a>
+    </div>
+  </footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+const CATS = {
+  city:    { label: 'Cities',        color: '#1a5ba8' },
+  history: { label: 'History',       color: '#c8102e' },
+  nature:  { label: 'Nature & sea',  color: '#12854a' },
+};
+
+// Coordinates are approximate.
+const PLACES = [
+  { name: 'Asmara', cat: 'city', capital: true, ll: [15.3229, 38.9251],
+    region: 'Central (Maekel)',
+    text: "The capital, set high on the plateau with a cool climate year round. Its 1930s Art Deco and modernist streets, including the Fiat Tagliero building and Cinema Impero, are a UNESCO World Heritage Site.",
+    clue: "The capital, a UNESCO World Heritage city famous for its 1930s architecture." },
+  { name: 'Massawa', cat: 'city', ll: [15.6097, 39.4500],
+    region: 'Northern Red Sea',
+    text: "Eritrea's historic Red Sea port, built partly on islands joined by causeways. Its old town mixes Ottoman, Egyptian and Italian buildings, and it connects to Asmara by a mountain railway.",
+    clue: "A historic port city built partly on islands in the Red Sea." },
+  { name: 'Keren', cat: 'city', ll: [15.7778, 38.4511],
+    region: 'Anseba',
+    text: "The country's second-largest city, ringed by mountains. Known for its Monday livestock market, its fruit gardens, and the small shrine of St. Mariam Dearit built inside a baobab tree.",
+    clue: "Second-largest city, known for a weekly livestock market and a shrine inside a baobab tree." },
+  { name: 'Mendefera', cat: 'city', ll: [14.8872, 38.8150],
+    region: 'Southern (Debub)',
+    text: "Capital of the Southern region, in fertile highland farming country. Its name means 'no one dared'.",
+    clue: "Capital of the Southern region, whose name means 'no one dared'." },
+  { name: 'Barentu', cat: 'city', ll: [15.1139, 37.5928],
+    region: 'Gash-Barka',
+    text: "Capital of Gash-Barka, the western lowlands. The region is a breadbasket of the country and home to the Kunama and Nara peoples.",
+    clue: "Capital of the western lowlands region of Gash-Barka." },
+  { name: 'Assab', cat: 'city', ll: [13.0092, 42.7394],
+    region: 'Southern Red Sea',
+    text: "A port near the southern tip of the country, close to the Bab el-Mandeb strait where the Red Sea meets the Gulf of Aden. One of the hottest places in Eritrea.",
+    clue: "The southernmost port, near where the Red Sea meets the Gulf of Aden." },
+  { name: 'Agordat', cat: 'city', ll: [15.5486, 37.8867],
+    region: 'Gash-Barka',
+    text: "A lowland market town on the Barka River, with one of the country's largest mosques.",
+    clue: "A lowland market town on the Barka River." },
+  { name: 'Nakfa', cat: 'history', ll: [16.6650, 38.4800],
+    region: 'Northern Red Sea',
+    text: "A small mountain town that became the symbol of the independence struggle. The national currency is named after it.",
+    clue: "A mountain town that gave its name to the national currency." },
+  { name: 'Adulis', cat: 'history', ll: [15.2600, 39.6600],
+    region: 'Northern Red Sea',
+    text: "Ruins of an ancient port near the Gulf of Zula, once a major Red Sea trading hub linking Africa with Arabia, India and the Mediterranean.",
+    clue: "Ruins of an ancient trading port that linked Africa to India and the Mediterranean." },
+  { name: 'Qohaito', cat: 'history', ll: [14.9200, 39.4100],
+    region: 'Southern (Debub)',
+    text: "An ancient town on the edge of the highlands, with temple columns, rock art and a stone dam that may be well over a thousand years old.",
+    clue: "Ancient highland site with temple columns and a very old stone dam." },
+  { name: 'Metera', cat: 'history', ll: [14.7000, 39.4300],
+    region: 'Southern (Debub)',
+    text: "An archaeological site near Senafe with a tall carved stele and the remains of pre-Aksumite and Aksumite-era buildings.",
+    clue: "Archaeological site near Senafe known for a tall carved stone stele." },
+  { name: 'Debre Bizen', cat: 'history', ll: [15.3300, 39.0500],
+    region: 'Northern Red Sea',
+    text: "A 14th-century Orthodox monastery on a mountaintop near Nefasit, famous for its library of ancient manuscripts.",
+    clue: "A 14th-century mountaintop monastery with ancient manuscripts." },
+  { name: 'Dahlak Archipelago', cat: 'nature', ll: [15.6600, 40.1000],
+    region: 'Northern Red Sea',
+    text: "Over 200 islands off Massawa, with coral reefs, sea turtles and dolphins. Only a few are inhabited.",
+    clue: "A chain of 200+ islands with coral reefs off the coast of Massawa." },
+  { name: 'Emba Soira', cat: 'nature', ll: [14.7300, 39.4900],
+    region: 'Southern (Debub)',
+    text: "Eritrea's highest mountain, rising about 3,000 meters above sea level near Senafe.",
+    clue: "The country's highest peak, about 3,000 meters tall." },
+  { name: 'Danakil lowlands', cat: 'nature', ll: [14.2000, 40.6000],
+    region: 'Southern Red Sea',
+    text: "Part of the Danakil Depression, one of the hottest and lowest places on Earth. It is the homeland of the Afar people.",
+    clue: "Part of one of the hottest, lowest places on Earth, homeland of the Afar." },
+];
+
+const map = L.map('map', { zoomSnap: 0.25, scrollWheelZoom: false })
+  .fitBounds([[12.3, 36.4], [18.1, 43.2]]);
+map.setMaxBounds([[9, 33], [21, 46]]);
+map.on('focus', () => map.scrollWheelZoom.enable());
+map.on('blur',  () => map.scrollWheelZoom.disable());
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 12, minZoom: 5,
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+// Highlight Eritrea's outline (Natural Earth via world-atlas). Fails quietly if unavailable.
+fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
+  .then(r => r.json())
+  .then(topo => {
+    const fc = topojson.feature(topo, topo.objects.countries);
+    const er = fc.features.find(f => String(f.id) === '232' || (f.properties && f.properties.name === 'Eritrea'));
+    if (er) L.geoJSON(er, { interactive: false, style: { color: '#12854a', weight: 2.5, fillColor: '#12854a', fillOpacity: 0.07 } }).addTo(map).bringToBack();
+  })
+  .catch(() => {});
+
+const markers = [];
+let selected = null;
+let mode = 'explore';
+
+function pinIcon(p, extra = '') {
+  return L.divIcon({
+    className: '',
+    html: `<div class="pin ${p.capital ? 'capital' : ''} ${extra}" style="background:${CATS[p.cat].color}"></div>`,
+    iconSize: p.capital ? [22, 22] : [16, 16],
+    iconAnchor: p.capital ? [11, 11] : [8, 8],
+  });
+}
+
+PLACES.forEach((p, i) => {
+  const m = L.marker(p.ll, { icon: pinIcon(p), keyboard: true, title: p.name }).addTo(map);
+  m.bindTooltip(p.name, { permanent: true, direction: 'right', offset: [10, 0], className: 'lbl' });
+  m.on('click', () => mode === 'explore' ? showPlace(i) : answer(i));
+  markers.push(m);
+});
+
+function setLabels(show) {
+  markers.forEach(m => show ? m.openTooltip() : m.closeTooltip());
+  markers.forEach(m => { const t = m.getTooltip(); t.options.permanent = show; });
+}
+
+function highlight(i) {
+  if (selected !== null) markers[selected].setIcon(pinIcon(PLACES[selected]));
+  selected = i;
+  if (i !== null) markers[i].setIcon(pinIcon(PLACES[i], 'sel'));
+}
+
+function showPlace(i) {
+  const p = PLACES[i];
+  highlight(i);
+  document.getElementById('info').innerHTML = `
+    <div class="tag" style="color:${CATS[p.cat].color}">${CATS[p.cat].label} · ${p.region}</div>
+    <h3>${p.name}${p.capital ? ' ★' : ''}</h3>
+    <p>${p.text}</p>`;
+  map.flyTo(p.ll, Math.max(map.getZoom(), 8), { duration: 0.8 });
+}
+
+// filters
+const active = new Set(Object.keys(CATS));
+const fbox = document.getElementById('filters');
+Object.entries(CATS).forEach(([k, c]) => {
+  const b = document.createElement('button');
+  b.className = 'chip';
+  b.innerHTML = `<i style="background:${c.color}"></i>${c.label}`;
+  b.onclick = () => {
+    active.has(k) ? active.delete(k) : active.add(k);
+    b.classList.toggle('off', !active.has(k));
+    PLACES.forEach((p, i) => {
+      if (active.has(p.cat)) markers[i].addTo(map); else markers[i].remove();
+    });
+  };
+  fbox.appendChild(b);
+});
+
+document.getElementById('randomBtn').onclick = () => {
+  const pool = PLACES.map((p, i) => i).filter(i => active.has(PLACES[i].cat) && i !== selected);
+  if (pool.length) showPlace(pool[Math.floor(Math.random() * pool.length)]);
+};
+
+// quiz
+let order = [], qi = 0, right = 0, asked = 0, answered = false;
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function startQuiz() {
+  order = shuffle(PLACES.map((p, i) => i)); qi = 0; right = 0; asked = 0;
+  nextQ();
+}
+function nextQ() {
+  if (qi >= order.length) {
+    document.getElementById('quizQ').textContent = `Done! You got ${right} of ${asked}. Hit "Start over" to play again.`;
+    document.getElementById('feedback').textContent = '';
+    answered = true;
+    return;
+  }
+  answered = false;
+  highlight(null);
+  setLabels(false);
+  document.getElementById('quizQ').textContent = PLACES[order[qi]].clue;
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+  map.fitBounds([[12.3, 36.4], [18.1, 43.2]]);
+}
+function answer(i) {
+  if (answered) return;
+  const target = order[qi];
+  const fb = document.getElementById('feedback');
+  asked++;
+  if (i === target) { right++; fb.textContent = `Correct, that's ${PLACES[target].name}!`; fb.className = 'feedback good'; }
+  else { fb.textContent = `Not quite. That's ${PLACES[i].name}. The answer is ${PLACES[target].name}.`; fb.className = 'feedback bad'; }
+  highlight(target);
+  markers[target].openTooltip();
+  answered = true;
+  qi++;
+  document.getElementById('score').textContent = `Score: ${right} / ${asked}`;
+}
+document.getElementById('nextBtn').onclick = () => { if (!answered) { asked++; qi++; document.getElementById('score').textContent = `Score: ${right} / ${asked}`; } nextQ(); };
+document.getElementById('resetBtn').onclick = () => { document.getElementById('score').textContent = 'Score: 0 / 0'; startQuiz(); };
+
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x === t));
+  mode = t.dataset.mode;
+  document.getElementById('explore').hidden = mode !== 'explore';
+  document.getElementById('quiz').hidden = mode !== 'quiz';
+  // show every place during quiz, hide names so it's a real test
+  if (mode === 'quiz') {
+    PLACES.forEach((p, i) => markers[i].addTo(map));
+    setLabels(false);
+    startQuiz();
+  } else {
+    PLACES.forEach((p, i) => { if (!active.has(p.cat)) markers[i].remove(); });
+    setLabels(true);
+    highlight(null);
+  }
+});
+</script>
+</body>
+</html>
